@@ -1,14 +1,15 @@
 from itertools import combinations
-import math
+# import math
 
-from file_handler import FileHandlingTools
-from rule_processor import RuleGenerator
+# from file_handler import FileHandlingTools
+# from rule_processor import RuleGenerator
 
 class FrequentItemsetCalculator(object):
     def __init__(self, transactions, support_threshold):
         self.transactions = transactions
         self.support_threshold = support_threshold
         self.levels_itemset = {}
+        self.lengths = []
         self.prev = {}
         
     def count_1_itemsets(self):
@@ -26,6 +27,7 @@ class FrequentItemsetCalculator(object):
                 L1[(item,)]=L1_dict[item]
         self.prev = L1
         self.levels_itemset=L1.copy()
+        self.lengths.append(len(L1))
         return L1
 
 
@@ -79,7 +81,9 @@ class FrequentItemsetCalculator(object):
         
     def count_support(self, C_k):
         #TODO: This fucntion counts the support for each candidates in C_k and after checking the support threshold, returns the frequent itemsets of level k.
-        for t in transactions:
+        if len(C_k)==0:
+            return {}
+        for t in self.transactions:
             self.candidate_helper(t, [], len(list(C_k.keys())[0]), C_k) 
         keys = C_k.keys()
         L_k = {}
@@ -88,28 +92,29 @@ class FrequentItemsetCalculator(object):
                 L_k[i] = C_k[i]
         self.prev = L_k
         self.levels_itemset.update(L_k)
+        self.lengths.append(len(L_k))
         return L_k
 
-file_handler = FileHandlingTools('data.csv', 'mapping.csv')
-transactions = file_handler.load_transactions()
-frequent_itemsets_calc = FrequentItemsetCalculator(transactions, math.ceil(0.3 * len(transactions)))
-prev_level = frequent_itemsets_calc.count_1_itemsets()
-# print(prev_level)
-C_2 = frequent_itemsets_calc.generate_candidate(1)
-L_2 = frequent_itemsets_calc.count_support(C_2)
-# print("l", L_2)
+# file_handler = FileHandlingTools('data.csv', 'mapping.csv')
+# transactions = file_handler.load_transactions()
+# frequent_itemsets_calc = FrequentItemsetCalculator(transactions, math.ceil(0.3 * len(transactions)))
+# prev_level = frequent_itemsets_calc.count_1_itemsets()
+# # print(prev_level)
+# C_2 = frequent_itemsets_calc.generate_candidate(1)
+# L_2 = frequent_itemsets_calc.count_support(C_2)
+# # print("l", L_2)
 
-C_3 = frequent_itemsets_calc.generate_candidate(2)
-L_3 = frequent_itemsets_calc.count_support(C_3)
+# C_3 = frequent_itemsets_calc.generate_candidate(2)
+# L_3 = frequent_itemsets_calc.count_support(C_3)
 
-# print (C_3)
-# print (frequent_itemsets_calc.levels_itemset)
-# print ()
-rule_generator = RuleGenerator(frequent_itemsets_calc.levels_itemset, len(transactions))
-rules = rule_generator.generate_rules(0.7)
-# print (rules)
-rules = rule_generator.quality_prune(rules)
+# # print (C_3)
+# # print (frequent_itemsets_calc.levels_itemset)
+# # print ()
+# rule_generator = RuleGenerator(frequent_itemsets_calc.levels_itemset, len(transactions))
+# rules = rule_generator.generate_rules(0.7)
+# # print (rules)
 # rules = rule_generator.quality_prune(rules)
-print (rules)
+# # rules = rule_generator.quality_prune(rules)
+# print (rules)
 
         

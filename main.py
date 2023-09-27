@@ -22,9 +22,9 @@ def main():
     rules = rule_generator.generate_rules(CONFIDENCE_THRESHOLD)
     rules = rule_generator.quality_prune(rules)
     
-    print("{} Levels for frequent itemsets".format(len(frequent_itemsets_calc.levels_itemset)))
-    for level, itemsets in frequent_itemsets_calc.levels_itemset.items():
-        print("level {}: {}".format(level, len(itemsets)))
+    print("{} Levels for frequent itemsets".format(len(frequent_itemsets_calc.lengths)))
+    for level, frequentsNum in enumerate(frequent_itemsets_calc.lengths):
+        print("level {}: {}".format(level+1, frequentsNum))
 
     print("------------------------------------")
     print("{} Rules have been generated".format(len(rules)))

@@ -22,6 +22,6 @@ class FileHandlingTools(object):
         with open(self.path_to_name_mapping_file, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-                if row[0] == id:
+                if row[0] == str(id):
                     return row[1]
-        return None
+        return "not found"
