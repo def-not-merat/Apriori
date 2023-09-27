@@ -78,13 +78,47 @@ class FrequentItemsetCalculator(object):
             return
         self.candidate_helper(t[1:], curr + [t[0]], l, C_k)
         self.candidate_helper(t[1:], curr, l, C_k)
+
+
+    def helper(self,C_k):
+        item_n = -1
+        for item in C_k:
+            item_n+=1
+            if(item_n%1000==0):
+                print("item", item_n, len(C_k))
+            t_n = 0
+            for t in self.transactions:
+                # t_n+=1
+                # if(t_n%100000==0):
+                #     print(t_n, len(t))
+                if self.isInItem(item,t, 0, 0):
+                    C_k[item]+=1
+
+    def isInItem(self, item, t, item_c, t_c):
+        if item_c==len(item):
+            return True
+        while t_c<len(t):
+            if t[t_c]==item[item_c]:
+                return self.isInItem(item, t, item_c + 1, t_c + 1)
+            t_c+=1
+        return False
+
         
+
+
+
     def count_support(self, C_k):
         #TODO: This fucntion counts the support for each candidates in C_k and after checking the support threshold, returns the frequent itemsets of level k.
+        # if len(self.lengths) == 1:
+        #     return
         if len(C_k)==0:
             return {}
-        for t in self.transactions:
-            self.candidate_helper(t, [], len(list(C_k.keys())[0]), C_k) 
+        
+        # for t in self.transactions:
+        #     self.candidate_helper(t, [], len(list(C_k.keys())[0]), C_k) 
+
+        self.helper(C_k)
+
         keys = C_k.keys()
         L_k = {}
         for i in keys:
@@ -93,6 +127,7 @@ class FrequentItemsetCalculator(object):
         self.prev = L_k
         self.levels_itemset.update(L_k)
         self.lengths.append(len(L_k))
+        print ("next level")
         return L_k
 
 # file_handler = FileHandlingTools('data.csv', 'mapping.csv')
