@@ -103,10 +103,13 @@ C_3 = frequent_itemsets_calc.generate_candidate(2)
 L_3 = frequent_itemsets_calc.count_support(C_3)
 
 # print (C_3)
-print (frequent_itemsets_calc.levels_itemset)
+# print (frequent_itemsets_calc.levels_itemset)
+# print ()
 rule_generator = RuleGenerator(frequent_itemsets_calc.levels_itemset, len(transactions))
-rules = rule_generator.generate_rules(0.1)
-print (rules)
+rules = rule_generator.generate_rules(0.7)
+# print (rules)
+rules = rule_generator.quality_prune(rules)
 # rules = rule_generator.quality_prune(rules)
+print (rules)
 
         

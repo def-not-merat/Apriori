@@ -10,11 +10,42 @@ class RuleGenerator(object):
     def generate_rules(self, confidence_threshold):
         #TODO: This function generates the association rules from the frequent itemsets and returns the list of rules.
         # rules are of the form (X, Y, support, confidence) which means X => Y [support, confidence]
-        pass
-        #return rules
+        rules = []
+        for itemset in self.levels_itemset:
+            if len(itemset)==1:
+                continue
+            subsets = []
+            self.subsets(itemset, subsets, [], [])
+            for subset in subsets:
+                # print (subset[0])
+                if len(subset[0]) == 0 or len(subset[1]) == 0:
+                    continue
+                conf = self.levels_itemset[itemset]/self.levels_itemset[tuple(subset[0])]
+                if conf >= confidence_threshold:
+                    # print ([subset[0], subset[1], self.levels_itemset[itemset]/self.num_transactions, conf])
+                    rules.append([subset[0], subset[1], self.levels_itemset[itemset]/self.num_transactions, conf])
+        return rules
+    
+    def subsets(self, itemset, res, curr, rest):
+        if len(itemset) == 0:
+            res.append([curr,rest + list(itemset)])
+            return
+        self.subsets(itemset[1:], res, curr, rest + [itemset[0]])
+        self.subsets(itemset[1:], res, curr + [itemset[0]], rest)
+
+            
+
     
     def quality_prune(self, rules):
         #TODO: This function prunes the misleading rules by using the lift measure and returns the updated list of rules.
         # lift(X => Y) = "confidence(X => Y) / support(Y)" or "P(X and Y) / (P(X) * P(Y))"
-        pass
-        #return rules
+        newRules = []
+        
+        for rule in rules:
+            lift = rule[3] / (self.levels_itemset[tuple(rule[1])]/self.num_transactions)
+            if lift > 1:
+                newRules.append(rule)
+            
+            print (rule, lift)
+
+        return newRules
