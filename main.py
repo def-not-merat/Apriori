@@ -15,7 +15,7 @@ def main():
     while prev_level:
         C_k = frequent_itemsets_calc.generate_candidate(k)
         L_k = frequent_itemsets_calc.count_support(C_k)
-        print(L_k)
+        # print(L_k)
         prev_level = L_k
         k += 1
 
