@@ -3,11 +3,11 @@ from file_handler import FileHandlingTools
 from rule_processor import RuleGenerator
 from itemset_processor import FrequentItemsetCalculator
 
-SUPPORT_THRESHOLD = 0.02
-CONFIDENCE_THRESHOLD = 0.6
+SUPPORT_THRESHOLD = 0.2
+CONFIDENCE_THRESHOLD = 0.4
 
 def main():
-    file_handler = FileHandlingTools('walmart1.csv', 'ID2Name.csv')
+    file_handler = FileHandlingTools('data.csv', 'mapping.csv')
     transactions = file_handler.load_transactions()
     frequent_itemsets_calc = FrequentItemsetCalculator(transactions, math.ceil(SUPPORT_THRESHOLD * len(transactions)))
     prev_level = frequent_itemsets_calc.count_1_itemsets()
@@ -15,7 +15,8 @@ def main():
     while prev_level:
         C_k = frequent_itemsets_calc.generate_candidate(k)
         L_k = frequent_itemsets_calc.count_support(C_k)
-        # print(L_k)
+        
+        print(L_k)
         prev_level = L_k
         k += 1
 
